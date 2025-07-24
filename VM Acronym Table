@@ -1,0 +1,26 @@
+
+
+Acronym    | Meaning                               | Description
+-----------|---------------------------------------|---------------------------------------------------------------
+KVM        | Kernel-based Virtual Machine          | Linux kernel module enabling full virtualization for VMs.
+Xen        | *(Not an acronym)*                    | Type-1 hypervisor running directly on hardware with Dom0/DomU.
+VM         | Virtual Machine                       | Software emulation of a physical computer running an OS.
+VMM        | Virtual Machine Manager               | GUI tool (`virt-manager`) for managing VMs via libvirt.
+QEMU       | Quick Emulator                        | Emulator providing hardware emulation; pairs with KVM.
+libvirt    | Linux Virtualization Toolkit          | API/library to manage KVM, Xen, networking, and storage.
+OVMF       | Open Virtual Machine Firmware         | UEFI firmware for VMs enabling modern boot support.
+UEFI       | Unified Extensible Firmware Interface | Replacement for BIOS, required for Secure Boot in VMs.
+HVM        | Hardware Virtual Machine              | Virtualization using CPU extensions (Intel VT-x / AMD-V).
+PV         | Paravirtualization                    | Lightweight virtualization requiring guest OS modification.
+VFIO       | Virtual Function I/O                  | Framework for direct device access in VMs (PCI passthrough).
+Dom0       | Domain Zero                           | Privileged management VM in Xen hypervisor.
+DomU       | Unprivileged Domain                   | Standard guest VM managed by Dom0 in Xen.
+VT-x       | Intel Virtualization Technology       | Hardware-assisted virtualization feature from Intel.
+AMD-V      | AMD Virtualization Technology         | AMD’s equivalent of VT-x for hardware-assisted virtualization.
+VNC        | Virtual Network Computing             | Remote display protocol used for VM graphical access.
+NAT        | Network Address Translation           | Enables VMs to access external networks via host IP.
+NIC        | Network Interface Card                | Physical or virtual network adapter used by host/guest.
+DHCP       | Dynamic Host Config Protocol          | Assigns dynamic IP addresses in virtual networks.
+DNS        | Domain Name System                    | Translates domain names to IPs; used in virtual networks.
+nmcli      | NetworkManager CLI Tool               | Command-line tool to manage network interfaces and bridges.
+
