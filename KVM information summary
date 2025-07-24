@@ -1,0 +1,125 @@
+Use the PDF file for reference.   
+https://doc.opensuse.org/documentation/leap/virtualization/book-virtualization_en.pdf
+
+OR use the information below while creating your virtual operation system machines, as a reference for added information.
+
+Preparing the VM Host Server (openSUSE OS). 
+VM host configuration needs two parts:
+- Networking: So that guests can make use of the network connection provided the host.
+                                  AND
+- A storage pool: Reachable from the host so that the guests can store their disk images.
+
+Configuring networks.
+Two way to configure network for VM host server:
+A Network bridge: This is the default and recommended way of providing the guests with network connection.
+It is the preferred configuration when you simply want to connect VM Guests to the VM Host Server's LAN.
+If a network connection is managed by wicked , use either YaST or the command line to create the network bridge.
+If a network connection is managed by NetworkManager, use the NetworkManager command line tool nmcli to create the network bridge
+                                      OR
+A virtual network: (With forwarding enabled).
+Virtual networks also provide DHCP
+and DNS services for VM Guests
+
+This full virtualization solution consists of two main components:
+A set of kernel modules ( kvm.ko , kvm-intel.ko , and kvm-amd.ko ) that provides the
+core virtualization infrastructure and processor-specific drivers.
+                     AND
+A user space program ( qemu-system-ARCH ) that provides emulation for virtual devices
+and control mechanisms to manage VM Guests (virtual machines).
+
+Understand that the libvirt is a library that provides a common API for managing popular
+virtualization solutions for KVM and Xen. 
+- Kernel-based Virtual Machine (KVM): KVM turns the Linux kernel into a hypervisor, allowing you to run multiple virtual machines (VMs) on a single physical host.
+- Xen (Literal name): Xen is a Type-1 (bare-metal) hypervisor that runs directly on the hardware and controls the guest VMs below an operating system.
+
+Virtualization console tools:
+virsh : A command-line tool to manage VM Guests
+
+virt-install (Package: virt-install ) : A command-line tool for creating new VM Guests 
+
+remote-viewer (Package: virt-viewer ) : A simple viewer of a remote desktop.
+
+virt-host-validate (Package: libvirt-client ): A tool that validates whether the host is configured   
+in a suitable way to run libvirt hypervisor drivers.
+
+Virtualization GUI tools:
+Virtual Machine Manager (package: virt-manager ) : The Virtual Machine Manager is a desktop tool for managing VM Guests. 
+It provides lifecycle control: start/shutdown, pause/resume, save/restore and create new VM Guests. 
+
+virt-viewer (Package: virt-viewer ) : A viewer for the graphical console of a VM Guest. VM Guests can be
+accessed by name, ID or UUID. 
+
+yast2 vm (Package: yast2-vm ) : A YaST module that simplifies the installation of virtualization tools and can set up a
+network bridge
+
+Installing virtualization components.
+To install the virtualization tools that are required to run a VM Host Server:
+By running the YaST Virtualization module on an already installed and running openSUSE Leap.
+Or
+By installing specific installation patterns on an already installed and running openSUSE Leap.
+
+libvirt daemons
+A libvirt deployment for accessing KVM or Xen requires one or more daemons to be installed
+and active on the host. libvirt provides two daemon deployment options: monolithic or modular daemons. 
+By default, the monolithic daemon is enabled, but a deployment can be switched to modular daemons 
+by managing the corresponding systemd service files.
+
+Monolithic daemon includes the primary hypervisor drivers and all supporting secondary drivers needed for storage,
+such as networking, node device, management and secure remote access for external clients. 
+
+Modular daemons, each driver runs in its own daemon, allowing users to customize their libvirt deployment.
+The modular daemon deployment is useful in scenarios where minimal libvirt support is needed. 
+For example, if virtual machine storage and networking is not provided by libvirt , 
+the libvirt-daemon-driver-storage and libvirt-daemon-driver-network type of packages are not required
+
+Starting and stopping the monolithic daemon.
+The monolithic daemon is known as libvirtd and is configured via /etc/libvirt/libvirt-
+d.conf . libvirtd is managed with several systemd unit files:
+- libvirtd.service: The main systemd unit file for launching libvirtd . We recommend configuring
+  libvirtd.service to start on boot if VMs are also configured to start on host boot.
+- libvirtd.socket: The unit file corresponding to the main read-write UNIX socket /var/run/libvirt/libvirt-sock
+  It is recommended to enable this unit on boot.
+- libvirtd-ro.socket: The unit file corresponding to the main read-only UNIX socket /var/run/libvirt/libvirt-sock-ro.
+  It is recommended to enable this unit on boot.
+- libvirtd-admin.socket: The unit file corresponding to the administrative UNIX socket /var/run/libvirt/libvirt-admin-sock.
+  It is recommended to enable this unit on boot.
+- libvirtd-tcp.socket: The unit file corresponding to the TCP 16509 port for non-TLS remote
+  access. This unit should not be configured to start on boot until the administrator has
+  configured a suitable authentication mechanism.
+- libvirtd-tls.socket: The unit file corresponding to the TCP 16509 port for TLS remote access.
+  This unit should not be configured to start on boot until the administrator has deployed
+  x509 certificates and optionally configured a suitable authentication mechanism.
+
+Understand when systemd socket activation is used, certain configuration settings in libvirtd.conf are
+no longer honored. Instead, these settings must be controlled via the system unit files:
+- listen_tcp: TCP socket usage is enabled by starting the libvirtd-tcp.socket unit file.
+- listen_tls: TLS socket usage is enabled by starting the libvirtd-tls.socket unit file.
+- tcp_port: Port for the non-TLS TCP socket, controlled via the ListenStream parameter in the libvirtd-tcp.socket unit file.
+- tls_port: Port for the TLS TCP socket, controlled via the ListenStream parameter in the libvirtd-tls.socket unit file.
+- listen_addr: IP address to listen on, independently controlled via the ListenStream parameter in the libvirtd-tcp.socket or libvirtd-tls.socket unit files.
+- unix_sock_group: UNIX socket group owner, controlled via the SocketGroup parameter in the libvirtd.socket and libvirtd-ro.socket unit files.
+- unix_sock_ro_perms: Read-only UNIX socket permissions, controlled via the SocketMode parameter in the libvirtd-ro.socket unit file.
+- unix_sock_rw_perms: Read-write UNIX socket permissions, controlled via the SocketMode parameter in the libvirtd.socket unit file.
+- unix_sock_admin_perms: Admin UNIX socket permissions, controlled via the SocketMode parameter in the libvirtd-admin.socket unit file.
+- unix_sock_dir: Directory in which all UNIX sockets are created, independently controlled via the ListenStream parameter in any of the libvirtd.socket , libvirtd-ro.socket and libvirtd-admin.socket unit files.
+
+Starting and stopping the modular daemons.
+The modular daemons are named after the driver which they are running, with the pattern
+“virt DRIVER d”. They are configured via the files /etc/libvirt/virtDRIVERd.conf. SUSE
+supports the virtqemud and virtxend hypervisor daemons, along with all the supporting secondary daemons:
+Refer to: https://doc.opensuse.org/documentation/leap/virtualization/book-virtualization_en.pdf:
+7.2 Starting and stopping the modular daemons, to review secondary daemons support.
+
+UEFI support:
+UEFI support is provided by OVMF (Open Virtual Machine Firmware). To enable UEFI boot, first
+install the qemu-ovmf-x86_64 or qemu-uefi-aarch64 package depending on the architecture
+of the guest
+
+Nested virtualization in KVM
+Live migration of a nested VM Guest is not supported; therefore, use it for software development and testing
+L0: A bare metal host running KVM.
+L1: A virtual machine running on L0. Because it can run another KVM, it is called a guest hypervisor.
+L2: A virtual machine running on L1. It is called a nested guest.
+
+
+
