@@ -1,0 +1,50 @@
+For VM acronyms reference here: 
+https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/VM%20Acronym%20Table
+
+Understand that in: 
+https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/Step%20by%20Step%20VM%20and%20Network%20connect%20creation%20using%20VM%20host%20setup
+
+This step-by-step give examples on most of the technologies I used to learn and understand how to do, create, and manage virtual machines 
+using these technologies differently. Therefore, while following the step-by-step, please understand the relationships between the VM techolongies 
+because you do not need everything I show you in the step-by-step; however, I can only show you the different 
+optional chooses because I want to learn and know how the create VM for different business used cases.
+
+
+Below here is a relationship table; therefore you know pick this or pick that.
+
+
+Group/Context               | Related Acronyms                       | Guidance
+----------------------------|----------------------------------------|---------------------------------------------------------------
+Hypervisor Choice           | KVM OR Xen                             | Pick one based on use case:  
+                            |                                        | -> KVM: Native to Linux, easier with libvirt, better GUI support  
+                            |                                        | -> Xen: Type-1 hypervisor, high isolation, requires Dom0  
+
+Virtualization Mode         | HVM  OR PV                             | Pick one based on guest OS:  
+                            |                                        | -> HVM: Full virtualization for unmodified OS (e.g., Windows)  
+                            |                                        | -> PV: Better performance, requires guest OS modification  
+
+CPU Hardware Virtualization | VT-x  OR  AMD-V                        | Use whichever your CPU supports: Intel (VT-x) or AMD (AMD-V)  
+
+Firmware / Boot Type        | BIOS   OR  UEFI (with OVMF)            | Choose based on OS support:  
+                            |                                        | -> UEFI/OVMF: Required for Secure Boot, modern OSes  
+                            |                                        | -> BIOS: Legacy systems only  
+
+Xen Architecture            | Dom0 (control) + DomU (guest)          | Use if running Xen. Dom0 manages DomU VMs. Not used in KVM setups  
+
+Networking Setup            | NAT  OR   Bridge (via nmcli)           | Pick based on access needs:  
+                            |                                        | -> NAT: Easy, isolated, no LAN exposure  
+                            |                                        | -> Bridge: Direct LAN access, needed for external access to VMs  
+
+Remote Display Protocol     | VNC  OR  SPICE / virt-viewer           | Pick based on performance or client compatibility  
+
+Device Assignment           | PCI passthrough (legacy)OR  VFIO       | VFIO is the modern, secure replacement for legacy passthrough  
+
+
+Group/Context              | Related Acronyms
+---------------------------|---------------------------------------------------------
+Virtualization Core        | KVM, QEMU, libvirt, VFIO, virt-manager, VMM
+Hypervisor Technologies    | KVM, Xen, HVM, PV, VT-x, AMD-V
+Xen Architecture           | Xen, Dom0, DomU, PV, HVM
+Firmware & Boot            | OVMF, UEFI, HVM
+Network Config             | NAT, NIC, DHCP, DNS, nmcli
+Remote Access Tools        | VNC, virt-viewer, remote-viewer
