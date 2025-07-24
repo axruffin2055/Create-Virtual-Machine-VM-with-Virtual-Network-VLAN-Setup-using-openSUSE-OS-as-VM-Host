@@ -46,8 +46,8 @@ Prerequisites
 - Optional: access to YaST or command-line tools like zypper, dnf, or nmcli. 
 - Optional: External drive or dedicated partition for hosting VM images or testing bootloaders.
 
-Installation:
-https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/commit/59d65fc6eda3aab7904d660afce59a60319af65e
+Installation:    
+https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/Step%20by%20Step%20VM%20and%20Network%20connect%20creation%20using%20VM%20host%20setup
 
 Usage :  
 Create and Start VMs:
