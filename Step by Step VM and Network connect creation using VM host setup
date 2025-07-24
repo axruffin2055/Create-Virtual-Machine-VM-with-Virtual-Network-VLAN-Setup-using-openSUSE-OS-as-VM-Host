@@ -1,0 +1,214 @@
+Understand that you do not need to install everything here. I am giving you options giving your OS setup.
+If you do not understand VM acronym, here a reference table:
+https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/VM%20Acronym%20Table
+
+If you are confused on which technology tools or software to install, then understand the relationships here:
+
+grep -e 'vmx' /proc/cpuinfo   (Check see if system support VM)
+lsmod | grep kvm        (Check kvm module: This is for troubleshooting)
+Running the YaST Virtualization module to install KVM
+sudo zypper install yast2-vm
+sudo yast2 
+Then select Virtualization Install Hypervisor and Tools
+Select KVM server (QEMU) and  KVM tools (libvirt)
+You can start creating and configuring VM Guests.
+
+OR
+
+Use zypper to install : Syntax: zypper install -t pattern PATTERN_NAME.
+sudo zypper install -t pattern kvm_server && sudo zypper install -t pattern kvm_tools
+                        Or
+sudo yum install virt-manager libvirt libvirt-python libvirt-client
+sudo yum install qemu-kvm qemu-img
+
+Installing UEFI support
+sudo zypper install qemu-ovmf-x86_64
+View qemu-ovmf-x86_64 package UEFI firmware images:
+rpm -ql qemu-ovmf-x86_64
+When I create a VM for openSUSE: virt-install --boot uefi *.img
+The: --boot uefi: option will use this file: cat /usr/share/qemu/firmware/60-ovmf-x86_64-2m-opensuse.json
+and activate UEFI Secure Boot  
+
+Adding a network bridge using YaST (You may refer to the KVM.pdf).
+The book is hard to follow or is not up to date.  
+Use YaST GUI to understand how it works and configure settings need for network bridge.
+Use CLI and type/run: sudo yast2
+Then go to: System-> Network Settings->Hostnames  (Add your hostname with IP address or edit /etc/host file) 
+If you are using nmcli to add bridge, while using yast2, you can enable forwarding:
+Security and Users-> Security Center->Enter->Tab(To select window)->Tab(To move to window on right side)
+
+Adding a network bridge with nmcli 
+nmcli       (will show you network info)
+nmcli device show    (IP gateway, type, state, etc)
+man nmcli   (I highly recommand this)
+nmcli general {status | hostname | permissions | logging | reload} [ARGUMENTS...]
+Example: nmcli general status && nmcli general hostname
+nmcli networking {on | off | connectivity} [ARGUMENTS...]
+nmcli radio {all | wifi | wwan} [ARGUMENTS...]
+
+We will use this command to create network bridge using a connection type: bridge.
+nmcli connection {show | up | down | modify | add | edit | clone | delete   
+                  | monitor | reload | load | import | export | migrate} [ARGUMENTS...]
+
+sudo nmcli connection show --active          (You will need the UUID)
+sudo nmcli connection add type bridge ifname openSUSE_bridge    (create bridge with name openSUSE_bridge)
+sudo nmcli -f bridge connection show bridge-openSUSE_bridge     (View the bridge settings)
+We need to link our created network bridge: bridge-openSUSE_bridge : to our LAN.
+If connecting bridge to ethernet: eth0 : then choose bridge-slave (deprecated for ethernet with master):
+sudo nmcli connection add type bridge-slave ifname eth0 master openSUSE_bridge
+
+The bridge-slave is an older option. Plus I need Wifi connection command (Wifi connection is not ideal for business use cases).
+The KVM.pdf file will does not show infor on how to establish bridge link to Wifi; therefore, type/run : man nmcli : and find away.
+This is what I found. We can edit the connection with added options using the slave-type bridge:
+Create hotspot: We need each part to create hotspot. 
+wifi hotspot [ifname ifname] [con-name name] [ssid SSID] [band {a = 5.0 GHz| bg = 2.4 GHz}] [channel channel] [password password]
+nmcli -p   (Find your wifi ifname: wlan0)
+nmcli device wifi list  (Find your SSID: RufRouter and Channel)
+Create wifi hotspot:
+sudo nmcli device wifi hotspot ifname wlan0 con-name YourHotSpotName ssid YourSSID  band a Or b  channel channelNumber password createOne
+sudo nmcli device wifi hotspot ifname wlan0 con-name openSUSE_HotSpot ssid RufRouter band a channel 11 password XXXXXXXXXXXXX
+nmcli connection show openSUSE_HotSpot  (Check hot spot)
+nmcli connection delete openSUSE_HotSpot     (Because I will create vlan for network bridge)
+Now create wifi bridge with con-name or hot spot name:
+sudo nmcli connection add con-name openSUSE_HotSpot ifname wlan0 type wifi slave-type bridge master openSUSE_bridge
+
+OR
+
+Create and manage virtual networks using Virtual Machine Manager GUI:  (This is what I am using)
+Check and make sure ipv4 and ipv6 forwarding is set to 1
+First open CLI:
+cat /proc/sys/net/ipv4/ip_forward           (For both ipv4 & 6, you should see 1.)
+cat /proc/sys/net/ipv6/conf/all/forwarding  (If you see 0, we need to change 0 to 1)
+echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+echo 1 | sudo tee /proc/sys/net/ipv6/conf/all/forwarding
+
+Make forwarding Persistent:
+vim /etc/sysctl.d/sysctl_forwarding_change.conf  
+cat /etc/sysctl.d/sysctl_forwarding_change.conf        (File name is made up)
+net.ipv4.ip_forward = 1              (Copy and paste into file sysctl_forwarding_change.conf)
+net.ipv6.conf.all.forwarding = 1     (Copy and paste into file sysctl_forwarding_change.conf)
+
+Can disable them later:
+echo 0 | sudo tee /proc/sys/net/ipv4/ip_forward
+echo 0 | sudo tee /proc/sys/net/ipv6/conf/all/forwarding
+
+Virsh, libvirt and virtual manager operations rely on the libvirtd library; and needs to be able to connect to an already running libvirtd service.
+Check libvirtd: (may need: sudo or su - : then you will not need sudo this and sudo that because: su - )
+systemctl status libvirtd     (If inactive then...)
+systemctl start libvirtd      (Activate then....)
+systemctl enable libvirtd     (Now libvirtd socket units will persist after reboot)
+Use: lsblk  or sudo fdisk -l : If needed, when creating storage pool below, be sure to choose the correct physical disk for virtual storage. 
+
+Now open Virtual Machine manager:
+virt-manager        (Open Virtual Manager GUI)
+Or use openSUSE OS to open Virtual Manager GUI by...
+Click on desktop screen and type/run Virtual Machine Manager (Open up GUI)
+Go to: File-> Add connection -> Select hypervisor type and then connect  (You are creating a connection because you may not have any VMs)
+Now right click on connection hypervisor under: name-> select details (You can see info and make virtual network connection changes)
+Under: Virtual Network-> Select (+) sign  (You can create new network connection)
+
+
+Create a Storage pool and Storage volume
+Using Virtual Machine manager:
+Right click on connection network you just created (QEMU/KVM) under: name-> select details
+Go to: Storage: And use default storage pool or create a storage pool for your VMs (Be sure to use the VM host storage pool for better availability).
+when creating storage pool, if you are using: Type : dir: Filesystem Directory : Just note that the: Target Path : will be
+the storage pool for the VMs; therefore, we need to set that up or choose directory.
+Open CLI: To setup storage pool directory
+mkdir -p /home/YourUserName/kvm-pool   (When I use Virtual Machine manager to create storage pool,: /home/YourUserName/kvm-pool :
+                                        will be my: Target path : because I want my openSUSE OS /home LVM partition storage to 
+                                        be use for virtual volume storage for my VMs)
+ps -eo user,group,cmd | grep qemu-system
+Or try
+ps aux | grep qemu   (Check and see has premission of qemu-system)
+Output:
+anthony  12372  0.0  0.0   8380  2240 pts/1    S+   20:14   0:00 grep --color=auto qemu
+sudo chown qemu:qemu /home/anthony/kvm-pool    (So I need to give kvl-pool ownership to: qemu : as user and as group
+                                                You may see libvirt-qemu:kvm)
+sudo chmod 770 /home/anthony/kvm-pool          (Now qemu can read, write, and execute on kvm-pool as user and group)
+sudo virsh pool-list     (Check storage pool)
+Then create storage volume using storage pool: Select default or created storage pool on left side.
+Then look for : volumes : click (+) : then name, format, and capacity.
+Or Use qemu-img to create storage volume:
+qemu-img create -f qcow2 /home/anthony/kvm-pool/windows_vm.qcow2 100G
+sudo ls -l /var/lib/libvirt/images   (Check vokume)
+
+
+Use package manager to look for package needed for creating VM : dnf | yum | rpm | zypper
+zypper search -u | less   (or -i for install packages)
+zypper search nbd     (Get info on nbd packages)
+zypper info nbd       (Get info on nbd or get info on packages within nbd)
+sudo zypper install nbd    (search nbd would have shown installed or un-installed)
+
+Create a copy of physical filesystem:   (I do not recommend mounting a physical disk on a VM unless for good reason)
+modinfo nbd  (See if the module exist)
+lsmod | grep nbd  (Check to see if it is loaded)
+sudo modprobe nbd max_part=8  (Load nbd)
+lsblk       (Now you will see 16 nbd devices create by default: max_part=8 : should have created 8... lol)
+sudo qemu-nbd --connect=/dev/nbd0 /home/anthony/kvm-pool/Windows_11_vm.qcow2    
+sudo dd if=/dev/nvme0n1p3 of=/dev/nbd0 bs=4M status=progress  (Now we are copying a real physical partitioned disk filesystem  (My Windows 11 C: drive)    
+                                                                onto /dev/nbd0 device, which is connected to your *.qcow2 file)
+sudo qemu-nbd --disconnect /dev/nbd0
+
+While copying filesystem, if you receive: No space left on device: error from...
+sudo dd if=/dev/nvme0n1p3 of=/dev/nbd0 bs=4M status=progress 
+Output:
+160692174848 bytes (161 GB, 150 GiB) copied, 99 s, 1.6 GB/s
+dd: error writing '/dev/nbd0': No space left on device
+38401+0 records in
+38400+0 records out
+161061273600 bytes (161 GB, 150 GiB) copied, 100.941 s, 1.6 GB/s
+
+lsblk /dev/nvme0n1p3   (Check you filesystem size)
+Output: (Notice my Windows 11 filesystem is small) : https://github.com/axruffin2055/How-to-install-Windows-11-on-a-clean-disk
+NAME      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+nvme0n1p3 259:3    0 363.4G  0 part 
+Then 
+sudo qemu-nbd --disconnect /dev/nbd0
+qemu-img resize /home/anthony/kvm-pool/Windows_11_vm.qcow2 380G
+sudo qemu-nbd --connect=/dev/nbd0 /home/anthony/kvm-pool/Windows_11_vm.qcow2  
+sudo dd if=/dev/nvme0n1p3 of=/dev/nbd0 bs=4M status=progress          
+sudo qemu-nbd --disconnect /dev/nbd0             (Resize and disconnect when copy is done)
+
+We can finally create our VM:
+Open Virtual Machine Manager
+Then: File-> New Virtual Machine->Choose : Import existing disk image-> Select Windows_11_vm.qcow2 file 
+                                                                        Or browse /home/anthony/kvm-pool/Windows_11_vm.qcow2  
+Set the : OS Type: Microsoft Windows 11 or Generic
+Set the : Memory : CPUs :  (Check for free RAM: free -h  : Check for CPUs: nproc)
+You can adjust memory and CPU settings after creating the VM:
+virsh list --all     (Put name of VM to change cpu and memory)
+virsh setvcpus win11-copy 8 --config
+virsh setmem win11-copy 12G --config
+Select: Customize configuration before install
+And begin installation
+Go back to Virtual Machine Manager and start your VM.
+Have fun!!
+
+This is optional:
+To enable nesting permanently, enable the nested KVM module parameter in the /etc/mod-probe.d/kvm_*.conf (or kvm_intel.conf)
+Enable nested virtualization in KVM: (This is optional and used for testing)
+For Intel CPUs: sudo modprobe -r kvm_intel && modprobe kvm_intel nested=1   (CPU: kvm_intel)
+For AMD CPUs: sudo modprobe -r kvm_amd && modprobe kvm_amd nested=1
+
+Troubleshooting 
+Remember this Virtualization Guide has a lot of great infomation:
+https://doc.opensuse.org/documentation/leap/virtualization/html/book-virtualization/book-virtualization.html
+
+virt-log: shows the log files of the named libvirt domain, virtual machine or disk image
+virt-log -a Windows_11_vm.qcow2 
+journalctl --unit libvirtd          (Also use journalctl for loggs)
+
+Check the existing disk image for errors. Note that not all disk image formats support this feature.
+qemu-img check -f qcow2 /home/anthony/kvm-pool/Windows_11_vm.qcow2 
+
+Virt-rescue presents users with a rescue shell and several simple recovery tools which can be used to examine 
+and correct problems within a virtual machine or disk image. 
+virt-rescue -a Windows_11_vm.qcow2 
+
+This tool is used to report information regarding file systems, partitions and logical volumes in a disk image or virtual machine. 
+virt-filesystems -l -a Windows_11_vm.qcow2 
+
+Lists file names, file sizes, checksums, extended attributes and more from a virtual machine or disk image. 
+virt-ls
+
