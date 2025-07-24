@@ -42,24 +42,25 @@ Prerequisites
 - Optional: access to YaST or command-line tools like zypper, dnf, or nmcli. 
 - Optional: External drive or dedicated partition for hosting VM images or testing bootloaders.
 
-Usage
+Usage    
 Create and Start VMs:
 - Use virt-install to create headless or graphical VMs from ISO images.
-- Use virt-manager for GUI-based management and VM creation.
+- Use virt-manager for GUI-based management and VM creation.   
 Network Configuration:
 - Use nmcli or YaST to create a bridge interface for guest network access.
-- Guests can use DHCP or static IP depending on the chosen configuration.
+- Guests can use DHCP or static IP depending on the chosen configuration.    
 Storage Management:
 - Manage virtual disks via virsh pool-* commands or use virt-manager to assign disk images to VMs.
-- XFS or LVM-backed directories may be used as storage pools for flexibility and performance.
+- XFS or LVM-backed directories may be used as storage pools for flexibility and performance.    
 VM Access and Monitoring:
 - Access VMs via remote-viewer for graphical sessions.
-- Use virsh to start, stop, suspend, or snapshot VMs.
+- Use virsh to start, stop, suspend, or snapshot VMs.          
 Advanced Configuration:
 - Test bootloaders, disk partitioning schemes, and nested hypervisors (L2 on L1).
-- Optionally enable UEFI boot for guests using qemu-ovmf-x86_64.
+- Optionally enable UEFI boot for guests using qemu-ovmf-x86_64.    
 Validation:
 - Use virt-host-validate to check system readiness for virtualization.
+- 
 -------------------------------------------------------------------------------------------------------------------------------
 
 Networking so that guests can make use of the network connection provided the host. AND
