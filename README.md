@@ -3,9 +3,9 @@ We cannot solve our problems with the same thinking we used when we created them
 Albert Einstein
 
 All openSUSE Kernel-based Virtual Machine (KVM) studied material, learned processes, and utilized skills are based from kvm.pdf file:   
-https://doc.opensuse.org/documentation/leap/virtualization/book-virtualization_en.pdf   
+[openSUSE KVM.pdf file](https://doc.opensuse.org/documentation/leap/virtualization/book-virtualization_en.pdf)  
 Or use the website:   
-[https://doc.opensuse.org/documentation/leap/virtualization/html/book-virtualization/book-virtualization.htm ](https://doc.opensuse.org/documentation/leap/virtualization/html/book-virtualization/book-virtualization.html)   
+[openSUSE KVM website](https://doc.opensuse.org/documentation/leap/virtualization/html/book-virtualization/book-virtualization.html)   
 
 # Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host
 
@@ -47,7 +47,7 @@ Prerequisites
 - Optional: External drive or dedicated partition for hosting VM images or testing bootloaders.
 
 Installation:    
-[Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host](https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/Step%20by%20Step%20VM%20and%20Network%20connect%20creation%20using%20VM%20host%20setup)
+[Setup VM host with vlan connection for VM](https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/Step%20by%20Step%20VM%20and%20Network%20connect%20creation%20using%20VM%20host%20setup)
 
 Usage :  
 Create and Start VMs:
