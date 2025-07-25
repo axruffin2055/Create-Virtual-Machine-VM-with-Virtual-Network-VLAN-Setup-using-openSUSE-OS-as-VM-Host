@@ -1,10 +1,12 @@
-Understand that you do not need to install everything here. I am giving you options giving your OS setup.
+Understand that you do not need to install everything here. I am giving you software integration options giving your OS setup.
 If you do not understand VM acronym, here a reference table:
 https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/VM%20Acronym%20Table
 
-If you are confused on which technology tools or software to install, then understand the relationships here:
+If you are confused on which technology tools or softwares to install, then understand the relationships here:
 https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/Understand%20VM%20Technology%20Relationship
 
+Before creating a VM out of an OS, please backup the data on that OS. Or, like me, create a data copy of that OS and use the copy (Copy method is shown below).
+Also, a quick note, before following this project, read ahead first, understand the different option you can take, then create, build, secure, and manage.
 
 grep -e 'vmx' /proc/cpuinfo   (Check see if system support VM)
 lsmod | grep kvm        (Check kvm module: This is for troubleshooting)
