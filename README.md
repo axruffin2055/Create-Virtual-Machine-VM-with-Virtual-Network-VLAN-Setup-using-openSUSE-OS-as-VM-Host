@@ -47,7 +47,7 @@ Prerequisites
 - Optional: External drive or dedicated partition for hosting VM images or testing bootloaders.
 
 Installation:    
-[Setup VM host with vlan connection for VM](https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/Step%20by%20Step%20VM%20and%20Network%20connect%20creation%20using%20VM%20host%20setup)
+[Setup VM host with vlan connection for VM](https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/Step%20by%20Step%20VM%20and%20Network%20connection%20creation%20using%20VM%20host%20setup)
 
 If you do not understand VM acronym, here a reference table:  
 [Acronyms for VM](https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/VM%20Acronym%20Table)
