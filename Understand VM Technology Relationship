@@ -1,11 +1,9 @@
 For VM acronyms reference here: 
 https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/VM%20Acronym%20Table
 
-Understand that in: 
-https://github.com/axruffin2055/Create-Virtual-Machine-VM-with-Virtual-Network-VLAN-Setup-using-openSUSE-OS-as-VM-Host/blob/main/Step%20by%20Step%20VM%20and%20Network%20connect%20creation%20using%20VM%20host%20setup
-
-This step-by-step give examples on most of the technologies I used to learn and understand how to do, create, and manage virtual machines 
-using these technologies differently. Therefore, while following the step-by-step, please understand the relationships between the VM techolongies 
+Understand that in the: Step-by-Step VM and Network connection creation using VM host setup give examples on most of the 
+technologies I used to learn and understand how to do, create, and manage virtual machines  using these technologies differently. 
+Therefore, while following the step-by-step, please understand the relationships between the VM techolongies 
 because you do not need everything I show you in the step-by-step; however, I can only show you the different 
 optional chooses because I want to learn and know how the create VM for different business used cases.
 
