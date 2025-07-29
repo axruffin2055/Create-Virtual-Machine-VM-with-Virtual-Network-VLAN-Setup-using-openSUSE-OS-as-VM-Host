@@ -9,8 +9,11 @@ Output:
 Gain understand on any command by using man (Manual) command:
 man virt-install
 
-Make sure libvirtd is started and persistent:
-service libvirtd status                  (Using sysinitV)
+Make sure libvirtd daemon is started and persistent:
+# service libvirtd status                  (Use systemVinit)
+# systemctl status libvirtd                (Or use systemd)
+# systemctl start libvirtd
+# systemctl enable libvirtd                (Will now startup after boot)
 
 virt-manager and virsh are used in the same way because they both manage and configure VM and storage. However, virt-manager will allow 
 you to manage and configure VM and storage using a GUI verse virsh using a CLI. 
@@ -41,6 +44,45 @@ virsh help | less
 View the configuration file for virtualization host:
 vim /etc/libvirt/qemu.conf
 
+Gain info on a direct VM:
+# virsh dominfo <vm_name>
+
+Before creating a VM, be sure to check RAM, CPU, and disk space
+free -h                      (RAM)
+lscpu                        (CPU)
+df -h                        (Disk)
+
+Create VM using virsh
+# virt-install --ram 2048 --vcpus 8 --name rocky_10 --disk path=/anthony/KVM_pool/rocky_10.img,size=8 --network:openSUSE_host --cdrom /down/rocky10.iso
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+| **Parameter**                                        | **Short Description**                                                                           |
+| -----------------------------------------------------|------------------------------------------------------------------------------------------------ |
+| `virt-install`                                       | Create a new virtual machine                                                                    |
+| `--ram 2048`                                         | Allocate 2048 MB (2 GB) RAM to VM guest (Rocky10) from Host VM                                  |
+| `--vcpus 8`                                          | Allocate 8 virtual CPU cores to VM guest (Rocky10) from Host VM                                 |    
+| `--name rocky_10`                                    | Set VM name to `rocky_10`                                                                       |
+| `--disk path=/anthony/KVM_pool/rocky_10.img,size=8`  | Create 8 GB virtual disk at specified path (This is where the storage pool is coming from)      |
+| `--network=network:openSUSE_host`                    | Connect VM to `openSUSE_host` virtual network                                                   |
+| `--cdrom /down/rocky10.iso`                          | Boot from Rocky Linux 10 ISO (CD-ROM)                                                           |
+(/software/rocky10.iso would be a better directory to store *.iso files for VM) 
+
+Use virt-manager GUI to configure VM hardware: (Can change CPU or RAM among other things)
+virt-manager              (open GUI)
+View-> Details-> Look on the left side  
+Or use the CLI virsh edit command to open up the XML configuration file for the virtual guest:
+virt-edit                 (Press insert key for insert mode)
+
+Launch a VM as a Guest.
+This VM connection acts as if it will boot like a local OS and will show useful information for troubleshooting:
+# virsh start rocky10 --console --force-boot
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+| **Parameter**                                        | **Short Description**                                                                           |
+| -----------------------------------------------------|------------------------------------------------------------------------------------------------ |
+| `virsh`                                              | CLI tool to manage virtual machines via libvirt                                                 |
+| `start rocky10`                                      | Start the VM named `rocky10`                                                                    |
+| `--console`                                          | Immediately connect to the VM's serial console after boot                                       |
+| `--force`                                            | (Optional) Forces the start even if the VM is already running (not always required or valid)    |
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
