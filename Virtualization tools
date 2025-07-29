@@ -9,6 +9,45 @@ Output:
 Gain understand on any command by using man (Manual) command:
 man virt-install
 
-List all virsh 
+Make sure libvirtd is started and persistent:
+service libvirtd status                  (Using sysinitV)
+
+virt-manager and virsh are used in the same way because they both manage and configure VM and storage. However, virt-manager will allow 
+you to manage and configure VM and storage using a GUI verse virsh using a CLI. 
+To open Virtual Machine Manager:
+virt-manager
+
+Understanding and using virsh.
+virsh is used just like the virt-manager, but from the command line.
+-------------------------------------------------------------------------------
+| **Command**                          | **Task**                              |
+| ------------------------------------ | ------------------------------------- |
+| `virsh list --all`                   | List all VMs                          |
+| `virsh start <vm-name>`              | Start a VM                            |
+| `virsh shutdown <vm-name>`           | Shutdown a VM                         |
+| `virsh destroy <vm-name>`            | Force stop a VM                       |
+| `virsh reboot <vm-name>`             | Reboot a VM                           |
+| `virsh suspend <vm-name>` / `resume` | Suspend/Resume a VM                   |
+| `virsh define vm.xml`                | Create VM from XML definition         |
+| `virsh console <vm-name>`            | Connect to VM console                 |
+| `virsh edit <vm-name>`               | Edit a VM's configuration             |
+| `virsh snapshot-create-as <vm-name>` | Take a snapshot of the VM             |
+| `virsh autostart <vm-name>`          | Enable VM to autostart on system boot |
+| `virsh dominfo <vm-name>`            | Show VM information                   |
+--------------------------------------------------------------------------------
+List all virsh commands:
 virsh help | less
+
+View the configuration file for virtualization host:
+vim /etc/libvirt/qemu.conf
+
+
+
+
+
+
+
+
+
+
 
