@@ -2,9 +2,9 @@ List KVM packages:
 # yum list installed *virt*
 # zypper list installed *virt*               (I am using openSUSE package manager)
 
-For any commands, if you type some of the command then TAB TAB button, then the shell will list all command that start with the prefix you gave it.
+For any commands, if you type some of the command then TAB TAB button, then the 
+shell will list all command that start with the prefix you gave it.
 # vir                                 (Then TAB TAB button)
-Output:
 
 Gain understand on any command by using man (Manual) command:
 man virt-install
@@ -15,8 +15,8 @@ Make sure libvirtd daemon is started and persistent:
 # systemctl start libvirtd
 # systemctl enable libvirtd                (Will now startup after boot)
 
-virt-manager and virsh are used in the same way because they both manage and configure VM and storage. However, virt-manager will allow 
-you to manage and configure VM and storage using a GUI verse virsh using a CLI. 
+virt-manager and virsh are used in the same way because they both manage and configure VM and storage. 
+However, virt-manager will allow you to manage and configure VM and storage using a GUI verse virsh using a CLI. 
 To open Virtual Machine Manager:
 virt-manager
 
@@ -53,7 +53,7 @@ lscpu                        (CPU)
 df -h                        (Disk)
 
 Create VM using virsh
-# virt-install --ram 2048 --vcpus 8 --name rocky_10 --disk path=/anthony/KVM_pool/rocky_10.img,size=8 --network:openSUSE_host --cdrom /down/rocky10.iso
+# virsh install --ram 2048 --vcpus 8 --name rocky_10 --disk path=/anthony/KVM_pool/rocky_10.img,size=8 --network:openSUSE_host --cdrom /down/rocky10.iso
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 | **Parameter**                                        | **Short Description**                                                                           |
 | -----------------------------------------------------|------------------------------------------------------------------------------------------------ |
@@ -69,8 +69,34 @@ Create VM using virsh
 Use virt-manager GUI to configure VM hardware: (Can change CPU or RAM among other things)
 virt-manager              (open GUI)
 View-> Details-> Look on the left side  
+
 Or use the CLI virsh edit command to open up the XML configuration file for the virtual machine guest:
-virt-edit                 (Press insert key for insert mode)
+virsh edit                 (Press insert key for insert mode)
+
+We can use XML configuration file to configure pvpanic emulated ISA device; therefore, pvpanic can report 
+panic events:
+virsh list --all        (List all VM)
+virsh edit rocky10      (Open up this domain configuration file for this VM)
+While inside rocky10 config file, search for devices by typing:
+/devices                (Then press enter)
+Within the devices portion, we need to add pvpanic and it should look like this:
+<devices>
+  <panic>
+      <address type='isa' iobase='0x505'/>
+  </panic>
+We have now configured the pvpanic emulated ISA device in that virtual machine.
+Understand the mean behind each part placed in the XML file:
+---------------------------------------------------------------------------------------
+| XML Part         | Meaning                                                           |
+| ---------------- | ----------------------------------------------------------------- |
+| `<panic>`        | Enables panic device support in the VM                            |
+| `type='isa'`     | Uses the legacy ISA bus to expose the panic I/O device            |
+| `iobase='0x505'` | Panic device listens at I/O port address `0x505` inside the guest |
+----------------------------------------------------------------------------------------
+We can use the Virtual Machine Manager GUI to locate the ISA device:
+virt-manager           (Open GUI)
+Right click on VM-> details -> look within the hardware on the left side.
+Scroll down and see Panic Notifier device.
 
 Launch a VM as a Guest.
 This VM connection acts as if it will boot like a local OS and will show useful information for troubleshooting:
