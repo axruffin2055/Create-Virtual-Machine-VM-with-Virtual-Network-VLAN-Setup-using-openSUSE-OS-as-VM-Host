@@ -44,7 +44,7 @@ virsh help | less
 View the configuration file for virtualization host:
 vim /etc/libvirt/qemu.conf
 
-Gain info on a direct VM:
+Gain info on a target VM directly:
 # virsh dominfo <vm_name>
 
 Before creating a VM, be sure to check RAM, CPU, and disk space
@@ -69,12 +69,12 @@ Create VM using virsh
 Use virt-manager GUI to configure VM hardware: (Can change CPU or RAM among other things)
 virt-manager              (open GUI)
 View-> Details-> Look on the left side  
-Or use the CLI virsh edit command to open up the XML configuration file for the virtual guest:
+Or use the CLI virsh edit command to open up the XML configuration file for the virtual machine guest:
 virt-edit                 (Press insert key for insert mode)
 
 Launch a VM as a Guest.
 This VM connection acts as if it will boot like a local OS and will show useful information for troubleshooting:
-# virsh start rocky10 --console --force-boot
+# virsh start rocky10 --console --force
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 | **Parameter**                                        | **Short Description**                                                                           |
 | -----------------------------------------------------|------------------------------------------------------------------------------------------------ |
