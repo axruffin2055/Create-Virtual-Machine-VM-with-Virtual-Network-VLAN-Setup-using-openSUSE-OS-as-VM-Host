@@ -1,4 +1,4 @@
-List KVM packages:
+List KVM packages::
 # yum list installed *virt*
 # zypper list installed *virt*               (I am using openSUSE package manager)
 
