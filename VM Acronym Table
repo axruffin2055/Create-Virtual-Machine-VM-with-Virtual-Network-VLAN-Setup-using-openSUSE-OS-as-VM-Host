@@ -1,7 +1,7 @@
 
 
 Acronym    | Meaning                               | Description
------------|---------------------------------------|---------------------------------------------------------------
+-----------|---------------------------------------|----------------------------------------------------------------
 KVM        | Kernel-based Virtual Machine          | Linux kernel module enabling full virtualization for VMs.
 Xen        | *(Not an acronym)*                    | Type-1 hypervisor running directly on hardware with Dom0/DomU.
 VM         | Virtual Machine                       | Software emulation of a physical computer running an OS.
